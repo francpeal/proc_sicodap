@@ -111,4 +111,54 @@ select top 100 * from VW_VentasDet_Extended
 
 select * from M_CUENTA
 
-select * from vw
+select * from m_client
+
+select * from vw_articulo
+
+select * from M_LINTIP
+select * from T_LINEAS
+
+select * from M_PRODUC
+
+select * from M_TABLAS where DES_TAB like '%medid%'
+select * from M_TABLAS where CDG_TAB = 'UNM'
+
+select * from D_TABLAS where CDG_TAB = 'UNM'
+select distinct CDG_UMED from M_PRODUC 
+
+select * from stock_producto
+
+select CDG_PROD from M_STOCK group by CDG_PROD HAVING count(*)>1
+
+select 
+    ArtCod as cod_articulo, 
+    ArtNombre as descripcion, 
+    ArtTipoDesc as tipo_articulo, 
+    ArtLineaDesc as linea,
+    um.ABR_ITEM as unidad_medida,
+    isnull(s.stock_actual,0) as stock_actual,
+    p.PRE_DOL as precio_inc_igv
+from 
+    VW_Articulo art 
+    inner join M_PRODUC a on a.CDG_PROD = ArtCod
+    left join D_TABLAS um on um.CDG_TAB = 'UNM' and a.CDG_UMED = um.NUM_ITEM
+    -- left join M_STOCK s on s.CDG_PROD = art.ArtCod
+    left join 
+    (
+        select CDG_PROD as cod_articulo, sum(STK_ACT) as stock_actual from M_STOCK group by CDG_PROD having sum(STK_ACT)>0
+    ) s on s.cod_articulo = art.ArtCod
+    left join M_PRECIO p on p.CDG_LPRC = '001' and art.ArtCod = p.CDG_PROD
+where ArtVenta = 'S'
+
+
+select * from D_TABLAS where DES_ITEM like '%precio%'
+
+select * from M_TABLAS where DES_TAB like '%precio%'
+
+select * from D_TABLAS where CDG_TAB = 'PRC'
+
+select CDG_PROD from M_PRECIO where cdg_lprc = '001' group by CDG_PROD having count(*)>1
+
+select * from dap.vw_dap_articulos where descripcion like '%wabco%'
+
+select * from m_vendedor
